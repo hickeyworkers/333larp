@@ -73,7 +73,7 @@
             }
         }
 
-        /* Аватар с концентрическими переливающимися кругами */
+        /* Аватар с концентрическими кругами */
         .avatar-wrapper {
             display: flex;
             justify-content: center;
@@ -416,9 +416,6 @@
             canvas.width = size;
             canvas.height = size;
             
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, size, size);
-            
             const cx = size/2;
             const cy = size/2;
             
@@ -435,21 +432,18 @@
                     const radius = rings[i];
                     // чередование цветов: белый -> чёрный -> белый -> чёрный
                     let color;
-                    let glowIntensity;
                     if (i % 2 === 0) {
-                        // белое кольцо
-                        glowIntensity = 0.5 + Math.sin(time + i * 0.5) * 0.3;
+                        // белое кольцо с пульсацией
                         color = `rgba(255, 255, 255, ${0.6 + Math.sin(time + i) * 0.3})`;
                     } else {
                         // чёрное кольцо с серым отливом
-                        glowIntensity = 0.3 + Math.sin(time + i * 0.7) * 0.2;
-                        color = `rgba(80, 80, 80, ${0.4 + Math.sin(time + i * 1.2) * 0.2})`;
+                        color = `rgba(80, 80, 80, ${0.5 + Math.sin(time + i * 1.2) * 0.2})`;
                     }
                     
                     ctx.beginPath();
                     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
                     ctx.strokeStyle = color;
-                    ctx.lineWidth = 3;
+                    ctx.lineWidth = 2.5;
                     ctx.stroke();
                     
                     // добавим лёгкое свечение для белых колец
@@ -457,7 +451,7 @@
                         ctx.beginPath();
                         ctx.arc(cx, cy, radius + 1, 0, Math.PI * 2);
                         ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + Math.sin(time + i) * 0.15})`;
-                        ctx.lineWidth = 1.5;
+                        ctx.lineWidth = 1.2;
                         ctx.stroke();
                     }
                 }
@@ -478,14 +472,15 @@
         drawConcentricAvatar();
 
         // ========== СЧЁТЧИК ПРОСМОТРОВ (каждые 30 минут +4) ==========
-        let views = 1217; // 1.217
+        // Стартуем с 1.217 (1217 просмотров)
+        let views = 1217;
         const viewElement = document.getElementById('viewCounter');
         
         function formatViews(num) {
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1).replace(/\.0$/, '') + '.' + (num % 1000).toString().padStart(3, '0');
-            }
-            return num.toString();
+            // Формат: X.XXX (например, 1.217, 1.221, 2.015)
+            const thousands = Math.floor(num / 1000);
+            const remainder = num % 1000;
+            return `${thousands}.${remainder.toString().padStart(3, '0')}`;
         }
         
         viewElement.innerText = formatViews(views);
