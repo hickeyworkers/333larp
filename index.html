@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Compass cult group | red neon</title>
+    <title>Compass cult group | concentric avatar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -23,7 +23,6 @@
             padding: 20px;
         }
 
-        /* Фон — чёрный с лёгкой дымкой */
         .bg {
             position: fixed;
             top: 0;
@@ -34,7 +33,6 @@
             z-index: 0;
         }
 
-        /* Частицы — серые */
         #particles {
             position: fixed;
             width: 100%;
@@ -46,81 +44,60 @@
             opacity: 0.4;
         }
 
-        /* Контейнер с переливающимся неоном по краям */
         .container {
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 460px;
+            max-width: 480px;
             background: rgba(5, 5, 5, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 32px;
             padding: 24px 20px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             animation: neonPulse 3s ease-in-out infinite;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* Анимация переливающейся неоновой рамки (серая/белая) */
         @keyframes neonPulse {
             0% {
-                box-shadow: 0 0 5px rgba(200,200,200,0.2), 0 0 10px rgba(200,200,200,0.1), inset 0 0 5px rgba(200,200,200,0.05);
+                box-shadow: 0 0 5px rgba(200,200,200,0.2), 0 0 10px rgba(200,200,200,0.1);
                 border-color: rgba(200,200,200,0.3);
             }
             50% {
-                box-shadow: 0 0 20px rgba(255,255,255,0.4), 0 0 35px rgba(200,200,200,0.2), inset 0 0 10px rgba(255,255,255,0.1);
+                box-shadow: 0 0 20px rgba(255,255,255,0.4), 0 0 35px rgba(200,200,200,0.2);
                 border-color: rgba(255,255,255,0.6);
             }
             100% {
-                box-shadow: 0 0 5px rgba(200,200,200,0.2), 0 0 10px rgba(200,200,200,0.1), inset 0 0 5px rgba(200,200,200,0.05);
+                box-shadow: 0 0 5px rgba(200,200,200,0.2), 0 0 10px rgba(200,200,200,0.1);
                 border-color: rgba(200,200,200,0.3);
             }
         }
 
-        .container {
-            border: 1px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
+        /* Аватар с концентрическими переливающимися кругами */
+        .avatar-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .avatar-canvas {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(255,255,255,0.2);
         }
 
-        /* Шапка */
         .header {
             display: flex;
             align-items: center;
             gap: 18px;
             margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 16px;
         }
 
-        /* ЗВЕЗДА (прелоадер) — крутится, серая, с белой обводкой */
-        .star {
-            position: relative;
-            width: 75px;
-            height: 75px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.3);
-            border-radius: 50%;
-            box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(255,255,255,0.2);
-        }
-        .star-piece {
-            position: absolute;
-            background-color: #cccccc;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: spinStar 6s linear infinite;
-        }
-        .s1 { width: 14%; animation-delay: 0s; }
-        .s2 { width: 17%; animation-delay: 0.9s; }
-        .s3 { width: 20%; animation-delay: 1.5s; }
-        .s4 { width: 23%; animation-delay: 2.1s; }
-        .s5 { width: 26%; animation-delay: 2.7s; }
-        @keyframes spinStar {
-            to { transform: rotate(360deg); }
-        }
-
         .info h1 {
-            font-size: 26px;
+            font-size: 24px;
             letter-spacing: 2px;
             background: linear-gradient(135deg, #ddd, #fff, #aaa);
             background-size: 200% auto;
@@ -130,8 +107,7 @@
             position: relative;
             display: inline-block;
         }
-
-        /* БЛЕДНО-КРАСНОЕ ПЕРЕЛИВАЮЩЕЕСЯ СВЕЧЕНИЕ ЗА БУКВАМИ */
+        /* бледно-красное свечение за буквами */
         .info h1::after {
             content: attr(data-text);
             position: absolute;
@@ -149,19 +125,10 @@
             opacity: 0.7;
             animation: redNeonPulse 2.5s ease-in-out infinite;
         }
-
         @keyframes redNeonPulse {
             0% { opacity: 0.4; filter: blur(8px); }
             50% { opacity: 0.9; filter: blur(16px); }
             100% { opacity: 0.4; filter: blur(8px); }
-        }
-
-        /* Дополнительный красный глоу вокруг текста */
-        .info {
-            position: relative;
-        }
-        .info h1 {
-            text-shadow: 0 0 5px rgba(255,100,100,0.3);
         }
 
         .badge {
@@ -174,7 +141,6 @@
             margin-top: 5px;
         }
 
-        /* Кнопка Telegram с переливающейся рамкой */
         .tg-btn {
             display: block;
             background: #111;
@@ -188,18 +154,9 @@
             animation: btnNeonPulse 3s ease-in-out infinite;
         }
         @keyframes btnNeonPulse {
-            0% {
-                box-shadow: 0 0 2px rgba(255,255,255,0.2);
-                border-color: rgba(255,255,255,0.3);
-            }
-            50% {
-                box-shadow: 0 0 12px rgba(255,255,255,0.4);
-                border-color: rgba(255,255,255,0.7);
-            }
-            100% {
-                box-shadow: 0 0 2px rgba(255,255,255,0.2);
-                border-color: rgba(255,255,255,0.3);
-            }
+            0% { box-shadow: 0 0 2px rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 12px rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.7); }
+            100% { box-shadow: 0 0 2px rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
         }
         .tg-btn:hover {
             background: #1a1a1a;
@@ -219,29 +176,18 @@
         }
         .tg-flex i { font-size: 22px; color: #aaa; }
 
-        /* Карточка данных — с серым неоном */
         .card {
             background: #0a0a0a;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 20px;
             padding: 14px;
             margin-bottom: 10px;
-            transition: all 0.3s ease;
             animation: cardNeonPulse 3s ease-in-out infinite;
         }
         @keyframes cardNeonPulse {
-            0% {
-                box-shadow: 0 0 2px rgba(255,255,255,0.1);
-                border-color: rgba(255,255,255,0.2);
-            }
-            50% {
-                box-shadow: 0 0 10px rgba(255,255,255,0.2);
-                border-color: rgba(255,255,255,0.5);
-            }
-            100% {
-                box-shadow: 0 0 2px rgba(255,255,255,0.1);
-                border-color: rgba(255,255,255,0.2);
-            }
+            0% { box-shadow: 0 0 2px rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+            50% { box-shadow: 0 0 10px rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+            100% { box-shadow: 0 0 2px rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
         }
         .card-title {
             color: #ccc;
@@ -269,7 +215,6 @@
             color: #bbb;
         }
 
-        /* Инфоблок — минималистичный */
         .info-block {
             background: rgba(10,10,10,0.4);
             border-left: 2px solid #888;
@@ -279,7 +224,30 @@
             color: #999;
         }
 
-        /* === КРУГЛЫЕ КНОПКИ В УГЛУ === */
+        /* Счётчик просмотров */
+        .view-counter {
+            background: #0a0a0a;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: cardNeonPulse 3s ease-in-out infinite;
+        }
+        .view-label {
+            font-size: 10px;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .view-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ccc;
+            font-family: monospace;
+        }
+
+        /* Круглые кнопки в углу */
         .social-corner {
             position: fixed;
             bottom: 25px;
@@ -364,11 +332,8 @@
 
         @media (max-width: 500px) {
             .container { padding: 18px; }
-            .info h1 { font-size: 22px; }
-            .star { width: 60px; height: 60px; }
-            .wrapper { padding: 6px 12px; gap: 8px; }
-            .wrapper .icon { width: 38px; height: 38px; font-size: 18px; }
-            .social-corner { bottom: 15px; right: 15px; }
+            .info h1 { font-size: 20px; }
+            .avatar-canvas { width: 80px; height: 80px; }
         }
     </style>
 </head>
@@ -376,22 +341,18 @@
     <div class="bg"></div>
     <canvas id="particles"></canvas>
     <div class="container">
-        <!-- ШАПКА СО ЗВЕЗДОЙ (с белой обводкой) -->
+        <!-- Аватар с концентрическими кругами -->
+        <div class="avatar-wrapper">
+            <canvas id="avatarCanvas" width="200" height="200" class="avatar-canvas"></canvas>
+        </div>
+
         <div class="header">
-            <div class="star">
-                <div class="star-piece s1"></div>
-                <div class="star-piece s2"></div>
-                <div class="star-piece s3"></div>
-                <div class="star-piece s4"></div>
-                <div class="star-piece s5"></div>
-            </div>
             <div class="info">
                 <h1 data-text="Compass cult group">Compass cult group</h1>
                 <div class="badge">● ROOT ACCESS</div>
             </div>
         </div>
 
-        <!-- КНОПКА ТГ -->
         <a href="https://t.me/centrie" target="_blank" class="tg-btn">
             <div class="tg-flex">
                 <i class="fab fa-telegram-plane"></i>
@@ -400,12 +361,17 @@
             </div>
         </a>
 
-        <!-- Минимальный информационный блок -->
         <div class="info-block">
             <i class="fas fa-shield-alt" style="margin-right: 6px;"></i> session active · encrypted channel
         </div>
 
-        <!-- ТОЛЬКО КАРТОЧКА ДАННЫХ (IP, локация, провайдер, FP) -->
+        <!-- Счётчик просмотров -->
+        <div class="view-counter">
+            <div class="view-label">TOTAL VIEWS</div>
+            <div class="view-number" id="viewCounter">1.217</div>
+            <div class="view-label" style="margin-top: 5px;">——</div>
+        </div>
+
         <div class="card">
             <div class="card-title"><i class="fas fa-globe"></i> [ GEOLOCATION & IP ]</div>
             <div class="row-line"><span class="label">IPv4</span><span class="value" id="userIp">--.--.--.--</span></div>
@@ -415,7 +381,7 @@
         </div>
     </div>
 
-    <!-- КРУГЛЫЕ КНОПКИ В УГЛУ (Telegram рабочий, остальные с крестиками) -->
+    <!-- Круглые кнопки в углу -->
     <div class="social-corner">
         <ul class="wrapper">
             <li class="icon telegram" id="tgIcon">
@@ -441,7 +407,96 @@
     </div>
 
     <script>
-        // ===================== IP / ГЕО (РЕАЛЬНЫЙ) =====================
+        // ========== АВАТАРКА С КОНЦЕНТРИЧЕСКИМИ ПЕРЕЛИВАЮЩИМИСЯ КРУГАМИ ==========
+        function drawConcentricAvatar() {
+            const canvas = document.getElementById('avatarCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const size = 200;
+            canvas.width = size;
+            canvas.height = size;
+            
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, size, size);
+            
+            const cx = size/2;
+            const cy = size/2;
+            
+            // Концентрические кольца: от внешнего к центру
+            const rings = [92, 82, 72, 62, 52, 42, 32, 22, 12];
+            let time = 0;
+            
+            function drawRings() {
+                ctx.clearRect(0, 0, size, size);
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, size, size);
+                
+                for (let i = 0; i < rings.length; i++) {
+                    const radius = rings[i];
+                    // чередование цветов: белый -> чёрный -> белый -> чёрный
+                    let color;
+                    let glowIntensity;
+                    if (i % 2 === 0) {
+                        // белое кольцо
+                        glowIntensity = 0.5 + Math.sin(time + i * 0.5) * 0.3;
+                        color = `rgba(255, 255, 255, ${0.6 + Math.sin(time + i) * 0.3})`;
+                    } else {
+                        // чёрное кольцо с серым отливом
+                        glowIntensity = 0.3 + Math.sin(time + i * 0.7) * 0.2;
+                        color = `rgba(80, 80, 80, ${0.4 + Math.sin(time + i * 1.2) * 0.2})`;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    
+                    // добавим лёгкое свечение для белых колец
+                    if (i % 2 === 0) {
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, radius + 1, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + Math.sin(time + i) * 0.15})`;
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                    }
+                }
+                
+                // центральная точка - маленькая белая
+                ctx.beginPath();
+                ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, 0.8)`;
+                ctx.fill();
+                
+                time += 0.03;
+                requestAnimationFrame(drawRings);
+            }
+            
+            drawRings();
+        }
+        
+        drawConcentricAvatar();
+
+        // ========== СЧЁТЧИК ПРОСМОТРОВ (каждые 30 минут +4) ==========
+        let views = 1217; // 1.217
+        const viewElement = document.getElementById('viewCounter');
+        
+        function formatViews(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1).replace(/\.0$/, '') + '.' + (num % 1000).toString().padStart(3, '0');
+            }
+            return num.toString();
+        }
+        
+        viewElement.innerText = formatViews(views);
+        
+        // Каждые 30 минут (1 800 000 миллисекунд) прибавляем 4
+        setInterval(() => {
+            views += 4;
+            viewElement.innerText = formatViews(views);
+        }, 1800000);
+        
+        // ========== IP / ГЕО ==========
         async function fetchGeo() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -471,7 +526,7 @@
             document.getElementById('browserFp').innerText = fp + '...[locked]';
         }
         
-        // ===================== TELEGRAM =====================
+        // ========== TELEGRAM ==========
         const tgIcon = document.getElementById('tgIcon');
         tgIcon.addEventListener('click', function(e) {
             e.preventDefault();
@@ -481,15 +536,15 @@
             }, 200);
         });
         
-        // ===================== ЧАСТИЦЫ (серые) =====================
-        const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        let width = window.innerWidth, height = window.innerHeight;
+        // ========== ЧАСТИЦЫ ==========
+        const canvasPart = document.getElementById('particles');
+        const ctxPart = canvasPart.getContext('2d');
+        let w = window.innerWidth, h = window.innerHeight;
         let particles = [];
         class Particle {
             constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
                 this.size = Math.random() * 2 + 0.5;
                 this.speedX = (Math.random() - 0.5) * 0.2;
                 this.speedY = (Math.random() - 0.5) * 0.12;
@@ -497,16 +552,16 @@
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                if (this.x < 0) this.x = width;
-                if (this.x > width) this.x = 0;
-                if (this.y < 0) this.y = height;
-                if (this.y > height) this.y = 0;
+                if (this.x < 0) this.x = w;
+                if (this.x > w) this.x = 0;
+                if (this.y < 0) this.y = h;
+                if (this.y > h) this.y = 0;
             }
             draw() {
-                ctx.fillStyle = `rgba(160, 160, 160, ${Math.random() * 0.2 + 0.05})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+                ctxPart.fillStyle = `rgba(160, 160, 160, ${Math.random() * 0.2 + 0.05})`;
+                ctxPart.beginPath();
+                ctxPart.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctxPart.fill();
             }
         }
         function initParticles(count) {
@@ -514,16 +569,16 @@
             for(let i = 0; i < count; i++) particles.push(new Particle());
         }
         function animateParticles() {
-            if(!ctx) return;
-            ctx.clearRect(0, 0, width, height);
+            if(!ctxPart) return;
+            ctxPart.clearRect(0, 0, w, h);
             particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateParticles);
         }
         function resizeCanvas() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvasPart.width = w;
+            canvasPart.height = h;
             initParticles(90);
         }
         window.addEventListener('resize', resizeCanvas);
