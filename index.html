@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iqmaxx | monochrome neon</title>
+    <title>Compass cult group | red neon</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -60,7 +60,7 @@
             animation: neonPulse 3s ease-in-out infinite;
         }
 
-        /* Анимация переливающейся неоновой рамки */
+        /* Анимация переливающейся неоновой рамки (серая/белая) */
         @keyframes neonPulse {
             0% {
                 box-shadow: 0 0 5px rgba(200,200,200,0.2), 0 0 10px rgba(200,200,200,0.1), inset 0 0 5px rgba(200,200,200,0.05);
@@ -91,7 +91,7 @@
             padding-bottom: 16px;
         }
 
-        /* ЗВЕЗДА (прелоадер) — крутится, серая */
+        /* ЗВЕЗДА (прелоадер) — крутится, серая, с белой обводкой */
         .star {
             position: relative;
             width: 75px;
@@ -100,6 +100,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(255,255,255,0.2);
         }
         .star-piece {
             position: absolute;
@@ -124,7 +127,43 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
         }
+
+        /* БЛЕДНО-КРАСНОЕ ПЕРЕЛИВАЮЩЕЕСЯ СВЕЧЕНИЕ ЗА БУКВАМИ */
+        .info h1::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9999, #cc6666, #ff9999);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: -1;
+            filter: blur(12px);
+            opacity: 0.7;
+            animation: redNeonPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes redNeonPulse {
+            0% { opacity: 0.4; filter: blur(8px); }
+            50% { opacity: 0.9; filter: blur(16px); }
+            100% { opacity: 0.4; filter: blur(8px); }
+        }
+
+        /* Дополнительный красный глоу вокруг текста */
+        .info {
+            position: relative;
+        }
+        .info h1 {
+            text-shadow: 0 0 5px rgba(255,100,100,0.3);
+        }
+
         .badge {
             font-size: 10px;
             color: #888;
@@ -180,7 +219,7 @@
         }
         .tg-flex i { font-size: 22px; color: #aaa; }
 
-        /* Карточка данных — тоже с неоном */
+        /* Карточка данных — с серым неоном */
         .card {
             background: #0a0a0a;
             border: 1px solid rgba(255,255,255,0.2);
@@ -337,7 +376,7 @@
     <div class="bg"></div>
     <canvas id="particles"></canvas>
     <div class="container">
-        <!-- ШАПКА СО ЗВЕЗДОЙ -->
+        <!-- ШАПКА СО ЗВЕЗДОЙ (с белой обводкой) -->
         <div class="header">
             <div class="star">
                 <div class="star-piece s1"></div>
@@ -347,7 +386,7 @@
                 <div class="star-piece s5"></div>
             </div>
             <div class="info">
-                <h1>iqmaxx</h1>
+                <h1 data-text="Compass cult group">Compass cult group</h1>
                 <div class="badge">● ROOT ACCESS</div>
             </div>
         </div>
