@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Compass cult group | concentric avatar</title>
+    <title>Compass cult group | roulette</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -247,6 +247,61 @@
             font-family: monospace;
         }
 
+        /* РУЛЕТКА */
+        .roulette-block {
+            background: #0a0a0a;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: cardNeonPulse 3s ease-in-out infinite;
+        }
+        .roulette-title {
+            font-size: 10px;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .roulette-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ccc;
+            font-family: monospace;
+            background: #000;
+            padding: 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            transition: all 0.05s ease;
+        }
+        .roulette-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .roulette-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #aaa;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 1px;
+        }
+        .roulette-btn:hover {
+            border-color: #aaa;
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+        .roulette-btn:active {
+            transform: scale(0.96);
+        }
+
         /* Круглые кнопки в углу */
         .social-corner {
             position: fixed;
@@ -334,6 +389,7 @@
             .container { padding: 18px; }
             .info h1 { font-size: 20px; }
             .avatar-canvas { width: 80px; height: 80px; }
+            .roulette-number { font-size: 28px; }
         }
     </style>
 </head>
@@ -372,6 +428,16 @@
             <div class="view-label" style="margin-top: 5px;">——</div>
         </div>
 
+        <!-- РУЛЕТКА -->
+        <div class="roulette-block">
+            <div class="roulette-title">🎲 NUMBER ROULETTE 🎲</div>
+            <div class="roulette-number" id="rouletteNumber">0</div>
+            <div class="roulette-buttons">
+                <button class="roulette-btn" id="spinBtn">SPIN</button>
+                <button class="roulette-btn" id="stopBtn">STOP</button>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-title"><i class="fas fa-globe"></i> [ GEOLOCATION & IP ]</div>
             <div class="row-line"><span class="label">IPv4</span><span class="value" id="userIp">--.--.--.--</span></div>
@@ -407,7 +473,7 @@
     </div>
 
     <script>
-        // ========== АВАТАРКА С КОНЦЕНТРИЧЕСКИМИ ПЕРЕЛИВАЮЩИМИСЯ КРУГАМИ ==========
+        // ========== АВАТАРКА ==========
         function drawConcentricAvatar() {
             const canvas = document.getElementById('avatarCanvas');
             if (!canvas) return;
@@ -418,8 +484,6 @@
             
             const cx = size/2;
             const cy = size/2;
-            
-            // Концентрические кольца: от внешнего к центру
             const rings = [92, 82, 72, 62, 52, 42, 32, 22, 12];
             let time = 0;
             
@@ -430,13 +494,10 @@
                 
                 for (let i = 0; i < rings.length; i++) {
                     const radius = rings[i];
-                    // чередование цветов: белый -> чёрный -> белый -> чёрный
                     let color;
                     if (i % 2 === 0) {
-                        // белое кольцо с пульсацией
                         color = `rgba(255, 255, 255, ${0.6 + Math.sin(time + i) * 0.3})`;
                     } else {
-                        // чёрное кольцо с серым отливом
                         color = `rgba(80, 80, 80, ${0.5 + Math.sin(time + i * 1.2) * 0.2})`;
                     }
                     
@@ -446,7 +507,6 @@
                     ctx.lineWidth = 2.5;
                     ctx.stroke();
                     
-                    // добавим лёгкое свечение для белых колец
                     if (i % 2 === 0) {
                         ctx.beginPath();
                         ctx.arc(cx, cy, radius + 1, 0, Math.PI * 2);
@@ -456,7 +516,6 @@
                     }
                 }
                 
-                // центральная точка - маленькая белая
                 ctx.beginPath();
                 ctx.arc(cx, cy, 5, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, 0.8)`;
@@ -465,31 +524,112 @@
                 time += 0.03;
                 requestAnimationFrame(drawRings);
             }
-            
             drawRings();
         }
-        
         drawConcentricAvatar();
 
-        // ========== СЧЁТЧИК ПРОСМОТРОВ (каждые 30 минут +4) ==========
-        // Стартуем с 1.217 (1217 просмотров)
+        // ========== СЧЁТЧИК ПРОСМОТРОВ ==========
         let views = 1217;
         const viewElement = document.getElementById('viewCounter');
-        
         function formatViews(num) {
-            // Формат: X.XXX (например, 1.217, 1.221, 2.015)
             const thousands = Math.floor(num / 1000);
             const remainder = num % 1000;
             return `${thousands}.${remainder.toString().padStart(3, '0')}`;
         }
-        
         viewElement.innerText = formatViews(views);
-        
-        // Каждые 30 минут (1 800 000 миллисекунд) прибавляем 4
         setInterval(() => {
             views += 4;
             viewElement.innerText = formatViews(views);
         }, 1800000);
+
+        // ========== РУЛЕТКА С ЭФФЕКТОМ КАРУСЕЛИ ==========
+        let spinInterval = null;
+        let isSpinning = false;
+        let stopRequested = false;
+        let stopDelayInterval = null;
+        
+        const rouletteNumberElement = document.getElementById('rouletteNumber');
+        const spinBtn = document.getElementById('spinBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        
+        // Генерация случайного числа от 0 до 9999
+        function getRandomNumber() {
+            return Math.floor(Math.random() * 10000);
+        }
+        
+        function formatNumber(num) {
+            let str = num.toString();
+            if (str.length === 1) return '0.00' + str;
+            if (str.length === 2) return '0.0' + str;
+            if (str.length === 3) return '0.' + str;
+            return str.slice(0, -3) + '.' + str.slice(-3);
+        }
+        
+        function updateNumberDisplay(num) {
+            rouletteNumberElement.innerText = formatNumber(num);
+        }
+        
+        function startSpin() {
+            if (spinInterval) clearInterval(spinInterval);
+            if (stopDelayInterval) clearInterval(stopDelayInterval);
+            isSpinning = true;
+            stopRequested = false;
+            
+            spinInterval = setInterval(() => {
+                if (isSpinning && !stopRequested) {
+                    const randomNum = getRandomNumber();
+                    updateNumberDisplay(randomNum);
+                }
+            }, 50); // меняется каждые 50 мс — эффект рулетки
+        }
+        
+        function stopSpin() {
+            if (!isSpinning) return;
+            
+            stopRequested = true;
+            
+            // Останавливаем основной интервал вращения
+            if (spinInterval) {
+                clearInterval(spinInterval);
+                spinInterval = null;
+            }
+            
+            // Эффект карусели: пробегаем ещё 6-8 чисел и останавливаемся
+            let stepsLeft = 6 + Math.floor(Math.random() * 4); // 6-9 шагов
+            const finalNumber = getRandomNumber();
+            
+            stopDelayInterval = setInterval(() => {
+                if (stepsLeft > 1) {
+                    // промежуточные случайные числа
+                    const midNum = getRandomNumber();
+                    updateNumberDisplay(midNum);
+                    stepsLeft--;
+                } else if (stepsLeft === 1) {
+                    // последний шаг — финальное число
+                    updateNumberDisplay(finalNumber);
+                    stepsLeft--;
+                } else {
+                    // завершаем
+                    clearInterval(stopDelayInterval);
+                    stopDelayInterval = null;
+                    isSpinning = false;
+                    stopRequested = false;
+                }
+            }, 80);
+        }
+        
+        spinBtn.addEventListener('click', () => {
+            if (isSpinning) return;
+            startSpin();
+        });
+        
+        stopBtn.addEventListener('click', () => {
+            if (!isSpinning) return;
+            stopSpin();
+        });
+        
+        // Запускаем рулетку по умолчанию (крутится с начала)
+        startSpin();
         
         // ========== IP / ГЕО ==========
         async function fetchGeo() {
