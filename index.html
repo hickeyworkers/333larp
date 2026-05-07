@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Compass cult group | NFT roulette</title>
+    <title>Compass cult group | roulette</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -278,7 +278,6 @@
             transform: scale(0.96);
         }
 
-        /* NFT-надпись (всегда видна) */
         .nft-info {
             font-size: 10px;
             color: #6fbf6f;
@@ -290,7 +289,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Сообщение о выигрыше */
         .nft-win-message {
             margin-top: 12px;
             padding: 8px;
@@ -447,7 +445,7 @@
                 <button class="roulette-btn" id="stopBtn">STOP</button>
             </div>
             <div class="nft-info">
-                🎁 Если выпадет зеркальное число (3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000) — дарим NFT!
+                🎁 Если выпадет зеркальное число (1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000) — дарим NFT!
             </div>
             <div id="nftWinMessage" class="nft-win-message hidden">
                 🎉 ПОЗДРАВЛЯЮ! ВЫ ВЫИГРАЛИ NFT! 🎉<br>
@@ -543,7 +541,7 @@
         }
         drawConcentricAvatar();
 
-        // ========== РУЛЕТКА С ПЛАВНОЙ АНИМАЦИЕЙ ==========
+        // ========== РУЛЕТКА ==========
         let spinInterval = null;
         let isSpinning = false;
         let stopRequested = false;
@@ -553,10 +551,16 @@
         const stopBtn = document.getElementById('stopBtn');
         const nftWinMessage = document.getElementById('nftWinMessage');
         
-        const winningNumbers = [3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000];
+        // Запрещённые числа (никогда не выпадают)
+        const forbiddenNumbers = [1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000];
         
+        // Функция генерации случайного числа, исключая запрещённые
         function getRandomNumber() {
-            return Math.floor(Math.random() * 10000);
+            let num;
+            do {
+                num = Math.floor(Math.random() * 10000);
+            } while (forbiddenNumbers.includes(num));
+            return num;
         }
         
         function formatNumber(num) {
@@ -572,7 +576,8 @@
         }
         
         function checkWin(num) {
-            if (winningNumbers.includes(num)) {
+            // Никогда не сработает, так как forbiddenNumbers исключены из генерации
+            if (forbiddenNumbers.includes(num)) {
                 nftWinMessage.classList.remove('hidden');
                 nftWinMessage.classList.add('visible');
                 setTimeout(() => {
