@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Compass cult group | smooth roulette</title>
+    <title>Compass cult group | NFT roulette</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -254,6 +254,7 @@
             display: flex;
             gap: 15px;
             justify-content: center;
+            margin-bottom: 12px;
         }
         .roulette-btn {
             background: transparent;
@@ -277,27 +278,39 @@
             transform: scale(0.96);
         }
 
-        /* NFT-сообщение */
-        .nft-message {
-            margin-top: 14px;
-            padding: 10px;
+        /* NFT-надпись (всегда видна) */
+        .nft-info {
+            font-size: 10px;
+            color: #6fbf6f;
+            background: rgba(0,30,0,0.3);
+            border: 1px solid #2a5a2a;
+            border-radius: 16px;
+            padding: 8px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Сообщение о выигрыше */
+        .nft-win-message {
+            margin-top: 12px;
+            padding: 8px;
             border-radius: 16px;
             font-size: 11px;
             font-family: monospace;
             text-align: center;
             transition: all 0.2s ease;
-            background: rgba(0,30,0,0.3);
-            border: 1px solid #2a5a2a;
-            color: #6fbf6f;
+            background: rgba(0,30,0,0.5);
+            border: 1px solid #6fbf6f;
+            color: #9fff9f;
         }
-        .nft-message.hidden {
+        .nft-win-message.hidden {
             opacity: 0;
             visibility: hidden;
             padding: 0;
             margin-top: 0;
             border: none;
         }
-        .nft-message.visible {
+        .nft-win-message.visible {
             opacity: 1;
             visibility: visible;
             animation: nftGlow 1s ease-in-out;
@@ -433,9 +446,12 @@
                 <button class="roulette-btn" id="spinBtn">SPIN</button>
                 <button class="roulette-btn" id="stopBtn">STOP</button>
             </div>
-            <div id="nftMessage" class="nft-message hidden">
-                🎉 ПОЗДРАВЛЯЮ! ВАМ ВЫПАЛО ЗЕРКАЛЬНОЕ ЧИСЛО! 🎉<br>
-                ДАРИМ NFT — ЗАБЕРИТЕ У НАС В ТЕЛЕГРАМ
+            <div class="nft-info">
+                🎁 Если выпадет зеркальное число (3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000) — дарим NFT!
+            </div>
+            <div id="nftWinMessage" class="nft-win-message hidden">
+                🎉 ПОЗДРАВЛЯЮ! ВЫ ВЫИГРАЛИ NFT! 🎉<br>
+                ЗАБЕРИТЕ У НАС В ТЕЛЕГРАМ
             </div>
         </div>
 
@@ -527,17 +543,15 @@
         }
         drawConcentricAvatar();
 
-        // ========== РУЛЕТКА С ПЛАВНОЙ АНИМАЦИЕЙ (60fps) ==========
+        // ========== РУЛЕТКА С ПЛАВНОЙ АНИМАЦИЕЙ ==========
         let spinInterval = null;
         let isSpinning = false;
         let stopRequested = false;
-        let stopSteps = [];
-        let currentStopStep = 0;
         
         const rouletteNumberElement = document.getElementById('rouletteNumber');
         const spinBtn = document.getElementById('spinBtn');
         const stopBtn = document.getElementById('stopBtn');
-        const nftMessage = document.getElementById('nftMessage');
+        const nftWinMessage = document.getElementById('nftWinMessage');
         
         const winningNumbers = [3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000];
         
@@ -559,30 +573,31 @@
         
         function checkWin(num) {
             if (winningNumbers.includes(num)) {
-                nftMessage.classList.remove('hidden');
-                nftMessage.classList.add('visible');
+                nftWinMessage.classList.remove('hidden');
+                nftWinMessage.classList.add('visible');
+                setTimeout(() => {
+                    nftWinMessage.classList.remove('visible');
+                    nftWinMessage.classList.add('hidden');
+                }, 5000);
             } else {
-                nftMessage.classList.remove('visible');
-                nftMessage.classList.add('hidden');
+                nftWinMessage.classList.remove('visible');
+                nftWinMessage.classList.add('hidden');
             }
         }
         
         function startSpin() {
             if (spinInterval) clearInterval(spinInterval);
-            if (stopSteps.length) stopSteps = [];
             isSpinning = true;
             stopRequested = false;
-            currentStopStep = 0;
-            nftMessage.classList.remove('visible');
-            nftMessage.classList.add('hidden');
+            nftWinMessage.classList.remove('visible');
+            nftWinMessage.classList.add('hidden');
             
-            // Плавное вращение — обновление каждые 16 мс (эффект 60 FPS)
             spinInterval = setInterval(() => {
                 if (isSpinning && !stopRequested) {
                     const randomNum = getRandomNumber();
                     updateNumberDisplay(randomNum);
                 }
-            }, 16); // 16ms = ~60fps
+            }, 16);
         }
         
         function stopSpin() {
@@ -593,9 +608,7 @@
                 spinInterval = null;
             }
             
-            // Эффект плавного торможения: генерируем последовательность чисел с замедлением
             const finalNumber = getRandomNumber();
-            // Создаём массив промежуточных чисел (от 5 до 12 шагов)
             const stepsCount = 10 + Math.floor(Math.random() * 8);
             const steps = [];
             for (let i = 0; i < stepsCount - 1; i++) {
@@ -604,7 +617,6 @@
             steps.push(finalNumber);
             
             let stepIndex = 0;
-            // Интервалы начинаются с быстрых (20ms) и постепенно замедляются до 120ms
             function nextStep() {
                 if (stepIndex < steps.length) {
                     updateNumberDisplay(steps[stepIndex]);
@@ -612,7 +624,6 @@
                     const delay = Math.min(20 + stepIndex * 8, 100);
                     setTimeout(nextStep, delay);
                 } else {
-                    // Анимация остановки завершена
                     isSpinning = false;
                     stopRequested = false;
                     checkWin(finalNumber);
@@ -631,7 +642,6 @@
             stopSpin();
         });
         
-        // Автоматически запускаем рулетку при загрузке
         startSpin();
         
         // ========== IP / ГЕО ==========
