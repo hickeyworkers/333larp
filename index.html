@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Compass cult group | roulette</title>
+    <title>Compass cult group | smooth roulette</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -73,7 +73,6 @@
             }
         }
 
-        /* Аватар с концентрическими кругами */
         .avatar-wrapper {
             display: flex;
             justify-content: center;
@@ -107,7 +106,6 @@
             position: relative;
             display: inline-block;
         }
-        /* бледно-красное свечение за буквами */
         .info h1::after {
             content: attr(data-text);
             position: absolute;
@@ -224,29 +222,6 @@
             color: #999;
         }
 
-        /* Счётчик просмотров */
-        .view-counter {
-            background: #0a0a0a;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            animation: cardNeonPulse 3s ease-in-out infinite;
-        }
-        .view-label {
-            font-size: 10px;
-            color: #888;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
-        .view-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ccc;
-            font-family: monospace;
-        }
-
         /* РУЛЕТКА */
         .roulette-block {
             background: #0a0a0a;
@@ -264,16 +239,16 @@
             margin-bottom: 12px;
         }
         .roulette-number {
-            font-size: 36px;
+            font-size: 44px;
             font-weight: bold;
             color: #ccc;
             font-family: monospace;
             background: #000;
-            padding: 12px;
+            padding: 16px;
             border-radius: 20px;
             margin-bottom: 16px;
-            letter-spacing: 2px;
-            transition: all 0.05s ease;
+            letter-spacing: 3px;
+            transition: all 0.02s linear;
         }
         .roulette-buttons {
             display: flex;
@@ -302,7 +277,37 @@
             transform: scale(0.96);
         }
 
-        /* Круглые кнопки в углу */
+        /* NFT-сообщение */
+        .nft-message {
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-family: monospace;
+            text-align: center;
+            transition: all 0.2s ease;
+            background: rgba(0,30,0,0.3);
+            border: 1px solid #2a5a2a;
+            color: #6fbf6f;
+        }
+        .nft-message.hidden {
+            opacity: 0;
+            visibility: hidden;
+            padding: 0;
+            margin-top: 0;
+            border: none;
+        }
+        .nft-message.visible {
+            opacity: 1;
+            visibility: visible;
+            animation: nftGlow 1s ease-in-out;
+        }
+        @keyframes nftGlow {
+            0% { box-shadow: 0 0 0 rgba(111,191,111,0); }
+            50% { box-shadow: 0 0 15px rgba(111,191,111,0.5); }
+            100% { box-shadow: 0 0 0 rgba(111,191,111,0); }
+        }
+
         .social-corner {
             position: fixed;
             bottom: 25px;
@@ -389,7 +394,7 @@
             .container { padding: 18px; }
             .info h1 { font-size: 20px; }
             .avatar-canvas { width: 80px; height: 80px; }
-            .roulette-number { font-size: 28px; }
+            .roulette-number { font-size: 32px; }
         }
     </style>
 </head>
@@ -397,7 +402,6 @@
     <div class="bg"></div>
     <canvas id="particles"></canvas>
     <div class="container">
-        <!-- Аватар с концентрическими кругами -->
         <div class="avatar-wrapper">
             <canvas id="avatarCanvas" width="200" height="200" class="avatar-canvas"></canvas>
         </div>
@@ -421,13 +425,6 @@
             <i class="fas fa-shield-alt" style="margin-right: 6px;"></i> session active · encrypted channel
         </div>
 
-        <!-- Счётчик просмотров -->
-        <div class="view-counter">
-            <div class="view-label">TOTAL VIEWS</div>
-            <div class="view-number" id="viewCounter">1.217</div>
-            <div class="view-label" style="margin-top: 5px;">——</div>
-        </div>
-
         <!-- РУЛЕТКА -->
         <div class="roulette-block">
             <div class="roulette-title">🎲 NUMBER ROULETTE 🎲</div>
@@ -435,6 +432,10 @@
             <div class="roulette-buttons">
                 <button class="roulette-btn" id="spinBtn">SPIN</button>
                 <button class="roulette-btn" id="stopBtn">STOP</button>
+            </div>
+            <div id="nftMessage" class="nft-message hidden">
+                🎉 ПОЗДРАВЛЯЮ! ВАМ ВЫПАЛО ЗЕРКАЛЬНОЕ ЧИСЛО! 🎉<br>
+                ДАРИМ NFT — ЗАБЕРИТЕ У НАС В ТЕЛЕГРАМ
             </div>
         </div>
 
@@ -447,7 +448,6 @@
         </div>
     </div>
 
-    <!-- Круглые кнопки в углу -->
     <div class="social-corner">
         <ul class="wrapper">
             <li class="icon telegram" id="tgIcon">
@@ -473,7 +473,6 @@
     </div>
 
     <script>
-        // ========== АВАТАРКА ==========
         function drawConcentricAvatar() {
             const canvas = document.getElementById('avatarCanvas');
             if (!canvas) return;
@@ -528,31 +527,20 @@
         }
         drawConcentricAvatar();
 
-        // ========== СЧЁТЧИК ПРОСМОТРОВ ==========
-        let views = 1217;
-        const viewElement = document.getElementById('viewCounter');
-        function formatViews(num) {
-            const thousands = Math.floor(num / 1000);
-            const remainder = num % 1000;
-            return `${thousands}.${remainder.toString().padStart(3, '0')}`;
-        }
-        viewElement.innerText = formatViews(views);
-        setInterval(() => {
-            views += 4;
-            viewElement.innerText = formatViews(views);
-        }, 1800000);
-
-        // ========== РУЛЕТКА С ЭФФЕКТОМ КАРУСЕЛИ ==========
+        // ========== РУЛЕТКА С ПЛАВНОЙ АНИМАЦИЕЙ (60fps) ==========
         let spinInterval = null;
         let isSpinning = false;
         let stopRequested = false;
-        let stopDelayInterval = null;
+        let stopSteps = [];
+        let currentStopStep = 0;
         
         const rouletteNumberElement = document.getElementById('rouletteNumber');
         const spinBtn = document.getElementById('spinBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const nftMessage = document.getElementById('nftMessage');
         
-        // Генерация случайного числа от 0 до 9999
+        const winningNumbers = [3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000];
+        
         function getRandomNumber() {
             return Math.floor(Math.random() * 10000);
         }
@@ -569,53 +557,68 @@
             rouletteNumberElement.innerText = formatNumber(num);
         }
         
+        function checkWin(num) {
+            if (winningNumbers.includes(num)) {
+                nftMessage.classList.remove('hidden');
+                nftMessage.classList.add('visible');
+            } else {
+                nftMessage.classList.remove('visible');
+                nftMessage.classList.add('hidden');
+            }
+        }
+        
         function startSpin() {
             if (spinInterval) clearInterval(spinInterval);
-            if (stopDelayInterval) clearInterval(stopDelayInterval);
+            if (stopSteps.length) stopSteps = [];
             isSpinning = true;
             stopRequested = false;
+            currentStopStep = 0;
+            nftMessage.classList.remove('visible');
+            nftMessage.classList.add('hidden');
             
+            // Плавное вращение — обновление каждые 16 мс (эффект 60 FPS)
             spinInterval = setInterval(() => {
                 if (isSpinning && !stopRequested) {
                     const randomNum = getRandomNumber();
                     updateNumberDisplay(randomNum);
                 }
-            }, 50); // меняется каждые 50 мс — эффект рулетки
+            }, 16); // 16ms = ~60fps
         }
         
         function stopSpin() {
             if (!isSpinning) return;
-            
             stopRequested = true;
-            
-            // Останавливаем основной интервал вращения
             if (spinInterval) {
                 clearInterval(spinInterval);
                 spinInterval = null;
             }
             
-            // Эффект карусели: пробегаем ещё 6-8 чисел и останавливаемся
-            let stepsLeft = 6 + Math.floor(Math.random() * 4); // 6-9 шагов
+            // Эффект плавного торможения: генерируем последовательность чисел с замедлением
             const finalNumber = getRandomNumber();
+            // Создаём массив промежуточных чисел (от 5 до 12 шагов)
+            const stepsCount = 10 + Math.floor(Math.random() * 8);
+            const steps = [];
+            for (let i = 0; i < stepsCount - 1; i++) {
+                steps.push(getRandomNumber());
+            }
+            steps.push(finalNumber);
             
-            stopDelayInterval = setInterval(() => {
-                if (stepsLeft > 1) {
-                    // промежуточные случайные числа
-                    const midNum = getRandomNumber();
-                    updateNumberDisplay(midNum);
-                    stepsLeft--;
-                } else if (stepsLeft === 1) {
-                    // последний шаг — финальное число
-                    updateNumberDisplay(finalNumber);
-                    stepsLeft--;
+            let stepIndex = 0;
+            // Интервалы начинаются с быстрых (20ms) и постепенно замедляются до 120ms
+            function nextStep() {
+                if (stepIndex < steps.length) {
+                    updateNumberDisplay(steps[stepIndex]);
+                    stepIndex++;
+                    const delay = Math.min(20 + stepIndex * 8, 100);
+                    setTimeout(nextStep, delay);
                 } else {
-                    // завершаем
-                    clearInterval(stopDelayInterval);
-                    stopDelayInterval = null;
+                    // Анимация остановки завершена
                     isSpinning = false;
                     stopRequested = false;
+                    checkWin(finalNumber);
                 }
-            }, 80);
+            }
+            nextStep();
         }
         
         spinBtn.addEventListener('click', () => {
@@ -628,7 +631,7 @@
             stopSpin();
         });
         
-        // Запускаем рулетку по умолчанию (крутится с начала)
+        // Автоматически запускаем рулетку при загрузке
         startSpin();
         
         // ========== IP / ГЕО ==========
@@ -661,7 +664,6 @@
             document.getElementById('browserFp').innerText = fp + '...[locked]';
         }
         
-        // ========== TELEGRAM ==========
         const tgIcon = document.getElementById('tgIcon');
         tgIcon.addEventListener('click', function(e) {
             e.preventDefault();
@@ -671,7 +673,6 @@
             }, 200);
         });
         
-        // ========== ЧАСТИЦЫ ==========
         const canvasPart = document.getElementById('particles');
         const ctxPart = canvasPart.getContext('2d');
         let w = window.innerWidth, h = window.innerHeight;
