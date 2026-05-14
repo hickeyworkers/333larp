@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Compass cult group | roulette</title>
+    <title>Compass cult group | NFT roulette</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -280,9 +280,9 @@
 
         .nft-info {
             font-size: 10px;
-            color: #6fbf6f;
-            background: rgba(0,30,0,0.3);
-            border: 1px solid #2a5a2a;
+            color: #888;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
             border-radius: 16px;
             padding: 8px;
             margin-top: 8px;
@@ -297,9 +297,9 @@
             font-family: monospace;
             text-align: center;
             transition: all 0.2s ease;
-            background: rgba(0,30,0,0.5);
-            border: 1px solid #6fbf6f;
-            color: #9fff9f;
+            background: #111;
+            border: 1px solid #555;
+            color: #ccc;
         }
         .nft-win-message.hidden {
             opacity: 0;
@@ -311,12 +311,6 @@
         .nft-win-message.visible {
             opacity: 1;
             visibility: visible;
-            animation: nftGlow 1s ease-in-out;
-        }
-        @keyframes nftGlow {
-            0% { box-shadow: 0 0 0 rgba(111,191,111,0); }
-            50% { box-shadow: 0 0 15px rgba(111,191,111,0.5); }
-            100% { box-shadow: 0 0 0 rgba(111,191,111,0); }
         }
 
         .social-corner {
@@ -541,7 +535,7 @@
         }
         drawConcentricAvatar();
 
-        // ========== РУЛЕТКА ==========
+        // ========== РУЛЕТКА - ВСЕ ЧИСЛА ПАДАЮТ ==========
         let spinInterval = null;
         let isSpinning = false;
         let stopRequested = false;
@@ -551,16 +545,11 @@
         const stopBtn = document.getElementById('stopBtn');
         const nftWinMessage = document.getElementById('nftWinMessage');
         
-        // Запрещённые числа (никогда не выпадают)
-        const forbiddenNumbers = [1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000];
+        // Выигрышные числа (зеркальные) - они ВОЗМОЖНЫ
+        const winningNumbers = [1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0000];
         
-        // Функция генерации случайного числа, исключая запрещённые
         function getRandomNumber() {
-            let num;
-            do {
-                num = Math.floor(Math.random() * 10000);
-            } while (forbiddenNumbers.includes(num));
-            return num;
+            return Math.floor(Math.random() * 10000);
         }
         
         function formatNumber(num) {
@@ -576,8 +565,7 @@
         }
         
         function checkWin(num) {
-            // Никогда не сработает, так как forbiddenNumbers исключены из генерации
-            if (forbiddenNumbers.includes(num)) {
+            if (winningNumbers.includes(num)) {
                 nftWinMessage.classList.remove('hidden');
                 nftWinMessage.classList.add('visible');
                 setTimeout(() => {
